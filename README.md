@@ -1,24 +1,35 @@
 # wh-crash-analysis
-preliminary analysis of WH crashes
+Preliminary analysis of WH crashes
 
-## method overview
-- Draw major corridors using either https://GeoJSON.io or https://Placemark.io tool
-  - Inside the tool, create a 'corridor' property and name each one (Main St, etc.)
-- Download corridors in GeoJSON format and name file: `corridors.geojson`
+## Updated method overview
+
+### Points
 - Download crash data CSV and separate out points where Route Class = Interstate, since most are on elevated limited-access highway that is not under control of local municipality and will confuse spatial analysis of local roads (especially those underneath highways)
 - Rename file to `crashes.csv` and upload to https://mapshaper.org tool
 - Click to open Console in Mapshaper to convert CSV to points on map with command:
-  - `-points x=Longitude y=Latitude`
-- Upload `corridors.geojson` to Mapshaper
-- Select 'crashes' to make it the active layer in Mapshaper
-- In Console, join polygons (corridors) to specific crash points with command:
-  - `-join corridors fields='corridor'`
-- In Mapshaper, inspect features of points to see new 'corridor' column (with either corridor name, such as 'Main St' or blank if none)
-- In Mapshaper, rename 'crashes' file to 'crashes-corridors' and export in CSV format
-- Import 'crashes-corridors.csv' file to Google Sheets
+  - `-points x=Longitude y=Latitude`   (carefully check column headers)
+- In Console in Mapshaper, confirm map projection (orientation of spatial data) with this command:
+  - `-proj wgs84`
+- In Mapshaper, click arrow to Inspect Features, and properties of each point should appear 
 
-## Product 1
-Create pivot table of 'crashes-corridors.csv' to identify corridors with highest count of crashes, and/or highest percentage of total crashes. See *preliminary* below, not yet final
+### Polygons 
+- Draw major polygons (such as corridors or intersections) using either https://GeoJSON.io or https://Placemark.io tool
+  - Inside the tool, create a property called 'corridor' or 'intersection' and name each polygon (Main St, etc.)
+- Download polygons in GeoJSON format and name file: `polygons.geojson` 
+- Upload `polygons.geojson` to Mapshaper
+- In Mapshaper Console, confirm map projection with this command:
+  - `-proj wgs84`
+  
+### Join polygons to points
+- In Mapshaper, select 'crashes' to make it the active layer
+- In Mapshaper Console, join polygons to specific crash points with command:
+  - `-join polygons fields='corridor'` (or 'intersection' or whatever name you gave them above)
+- In Mapshaper, inspect features of points to see new 'corridor' column (with name such as 'Main St' or blank if none)
+- In Mapshaper, rename 'crashes' file to 'crashes-joined' and export in CSV format
+
+### Pivot table
+- Import 'crashes-joined.csv' file to Google Sheets
+- Create pivot table of 'crashes-joined.csv' to identify corridors or intersections with highest count of crashes, and/or highest percentage of total crashes. See *preliminary* below, not yet final
 
 | Preliminary: Percent of all non-Interstate crashes in WH, 2018-2022 |       |               |
 |---------------------------------------------------------------------|-------|---------------|
