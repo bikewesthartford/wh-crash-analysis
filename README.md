@@ -5,7 +5,7 @@ preliminary analysis of WH crashes
 - Draw major corridors using either https://GeoJSON.io or https://Placemark.io tool
   - Inside the tool, create a 'corridor' property and name each one (Main St, etc.)
 - Download corridors in GeoJSON format and name file: `corridors.geojson`
-- Download crash data CSV and remove points with Interstate Highway codes to exclude them
+- Download crash data CSV and separate out points where Route Class = Interstate, since most are on elevated limited-access highway that is not under control of local municipality and will confuse spatial analysis of local roads (especially those underneath highways)
 - Rename file to `crashes.csv` and upload to https://mapshaper.org tool
 - Click to open Console in Mapshaper to convert CSV to points on map with command:
   - `-points x=Longitude y=Latitude`
@@ -41,5 +41,13 @@ Create pivot table of 'crashes-corridors.csv' to identify corridors with highest
 | Other Roads-Streets                                                 | 2161  | 32.0%         |
 | Grand Total                                                         | 6750  | 100.0%        |
  
+#### Notes
+- Removed 1751 WH crashes labeled as Interstate Highway I-84 or entrance/exit ramps, initially about 20 percent of 8501 total
+- All crashes reported in UConn Crash Repo for West Hartford 2018-22, based on 22 March 2023 data download. Note that police reports may delayed 1-6 months. 
+- Note that several recent fatal crashes (and perhaps others) do NOT yet appear in UConn Crash Repo: 
+  - Dec 20th Eugenia Yurovsky (age 89) was killed by a hit-and-run driver while crossing Boulevard at Whiting Lane.
+  - Dec 21st Carlos Garlaza (age 60), a roofing contractor, was struck by a driver while helping a resident exit their driveway at Mohegan Drive and Carlyle Road, and died on Dec 21st.
+  - Dec 25th 2022 two-car crash with 3 fatalities on Simsbury Road 
+
  ## Product 2
  Display results of pivot table in a Datawrapper choropleth map, with custom basemap of corridors.geojson
