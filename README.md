@@ -1,71 +1,57 @@
 # wh-crash-analysis
 Preliminary analysis of WH crashes
 
-## Updated method overview
+## Sources and Methods
+- Start with visual review of West Hartford Crash Map <https://bikewesthartford.github.io/wh-crashes> to identify hot spots of frequent crash locations. Use method below to spatially identify polygons (corridors) of frequent crash locations with more precision, since police reports do not name roadways uniformly.
+- Steps below for drawing, cleaning, and spatially joining crash data use manual methods with easy-to-learn free or open-source tools in your browser, as described in <https://HandsOnDataViz.org> open-access book. The same type of analysis can be conducted with more complex or proprietary GIS tools.
 
-### Points
-- Download crash data CSV and separate out points where Route Class = Interstate, since most are on elevated limited-access highway that is not under control of local municipality and will confuse spatial analysis of local roads (especially those underneath highways)
-- Rename file to `crashes.csv` and upload to https://mapshaper.org tool
-- Click to open Console in Mapshaper to convert CSV to points on map with command:
-  - `-points x=Longitude y=Latitude`   (carefully check column headers)
+### Draw Polygons (Corridors)
+- Draw polygons to represent major corridors using <https://Placemark.io> free tool
+  - One option is to import key street centerlines from a public source, then use Placemark right-click > Operations > buffer tool to draw uniform radius around each one, converting into polygons. But this does not address changing widths of roads.
+  - The option used here is to hand-draw each corridor.
+- Inside Placemark in Features or Table, create two properties for each polygon:
+  - corridor-part = detailed name to identify roadway and section on map (such as North Main St 2, the second polygon segment of this street)
+  - corridor = simplified name for pivot tables after join steps below
+  - Inside the tool, create a property called 'corridor' or 'intersection' and name each polygon (Main St, etc.)
+- Download polygons in GeoJSON format and name file: `wh-polygons.geojson`
+
+![polygon](images/polygon-draw.png)
+
+### Download and Clean Crash Data
+- Login to CT Crash Data Repository <https://www.ctcrash.uconn.edu> and run query where years = 2015-present and Town = West Hartford. Note that crash reports are typically delayed 1-6 months. Download CSV table 0 (crash events, not individual people involved) and rename to `wh-crashes-export-YYYY-MM-DD` and move first row to notes tab.
+- In CSV, keep all crashes in first tab, then create 2nd tab to show only crashes during study period (2018-2022). Note that even months later, some fatal crash reports from Dec 2022 have not yet been uploaded to CT Crash Data Repo. Remove unnecessary columns but keep these:
+  - CrashID, Latitude, Longitude, Date of Crash, Crash Severity (w text), Most Severe Injury (w text), Route Class (w text), Roadway Name (but not uniformly reliable)
+- In CSV, create 3rd and 4th tabs with these subsets:
+  - 3rd tab = 2018-22-Interstate: where Route Class = Interstate (I-84 highway or entrance & exit ramps), as reported by police. Remove from spatial analysis because crashes on elevated limited-access highway must be distinct from local roads underneath.
+  - 4th tab = 2018-22-NotInterstate: where Route Class does NOT equal Interstate. This is the focus of our spatial analysis, and we cannot rely on police reports of route names because these are not uniform.
+  - Export all spreadsheet tabs in Excel format to repo and rename `wh-crashes-tabs-2023-04-22.xls`
+  - export 4th tab (2018-22-NotInterstate) and rename to `crashes.csv` for simplicity in next steps
+
+### Upload and Join Polygons to Points in Mapshaper
+- Upload `crashes.csv` (crash points) to <https://mapshaper.org> tool
+- In Mapshaper, Click to open Console to convert CSV to points on map with command:
+  - `-points x=Longitude y=Latitude`   (carefully check column headers to confirm names)
 - In Console in Mapshaper, confirm map projection (orientation of spatial data) with this command:
   - `-proj wgs84`
 - In Mapshaper, click arrow to Inspect Features, and properties of each point should appear
 
 ![points](images/points.png)
 
-### Polygons
-- Draw major polygons (such as corridors or intersections) using either https://GeoJSON.io or https://Placemark.io tool
-  - Inside the tool, create a property called 'corridor' or 'intersection' and name each polygon (Main St, etc.)
-
-![polygon](images/polygon-draw.png)
-
-- Download polygons in GeoJSON format and name file: `polygons.geojson`
 - Upload `polygons.geojson` to Mapshaper
 - In Mapshaper Console, confirm map projection with this command:
   - `-proj wgs84`
-
-### Join polygons to points
 - In Mapshaper, select 'crashes' to make it the active layer
 - In Mapshaper Console, join polygons to specific crash points with command:
-  - `-join polygons fields='corridor'` (or 'intersection' or whatever name you gave them above)
-- In Mapshaper, inspect features of points to see new 'corridor' column (with name such as 'Main St' or blank if none)
+  - `-join wh-polygons fields='corridor,corridor-part'` which translates as Join the polygon outlines of each corridor to crash points located inside it, and copy the fields named 'corridor' and 'corridor-part' to each crash point
+  - Note that only crash points located inside polygons will receive new data
+- In Mapshaper, inspect features of points to see new 'corridor' and 'corridor-part' columns when present. This "joined" data allows us to do better pivot tables with more uniform corridor names in next steps.
 - In Mapshaper, rename 'crashes' file to 'crashes-joined' and export in CSV format
 
 ![join](images/join-polygon-to-points.png)
 
-### Pivot table
-- Import 'crashes-joined.csv' file to Google Sheets
-- Create pivot table of 'crashes-joined.csv' to identify corridors or intersections with highest count of crashes, and/or highest percentage of total crashes. See *preliminary* below, not yet final
+### Product 1: Pivot table
+- Open 'crashes-joined.csv' spreadsheet
+- Create pivot table of 'corridor' by count to identify uniformly-named roadways with the most crashes, or percent of total crashes.
 
-| Preliminary: Percent of all non-Interstate crashes in WH, 2018-2022 |       |               |
-|---------------------------------------------------------------------|-------|---------------|
-| corridor                                                            | COUNT | Percent Total |
-| New Britain Ave                                                     | 979   | 14.5%         |
-| North Main (combined)                                               | 524   | 7.8%          |
-| Albany Ave                                                          | 510   | 7.6%          |
-| Farmington Ave                                                      | 492   | 7.3%          |
-| South Main to NB                                                    | 384   | 5.7%          |
-| Prospect Ave                                                        | 344   | 5.1%          |
-| New Park Ave                                                        | 281   | 4.2%          |
-| Boulevard (combined)                                                | 226   | 3.3%          |
-| Quaker Lane South                                                   | 203   | 3.0%          |
-| Park Rd (combined)                                                  | 199   | 2.9%          |
-| Trout Brook south                                                   | 185   | 2.7%          |
-| Asylum Ave                                                          | 102   | 1.5%          |
-| Bloomfield Ave                                                      | 93    | 1.4%          |
-| Sedgwick Rd                                                         | 42    | 0.6%          |
-| Simsbury Rd                                                         | 25    | 0.4%          |
-| Other Roads-Streets                                                 | 2161  | 32.0%         |
-| Grand Total                                                         | 6750  | 100.0%        |
-
-#### Notes
-- Removed 1751 WH crashes labeled as Interstate Highway I-84 or entrance/exit ramps, initially about 20 percent of 8501 total
-- All crashes reported in UConn Crash Repo for West Hartford 2018-22, based on 22 March 2023 data download. Note that police reports may delayed 1-6 months.
-- Note that several recent fatal crashes (and perhaps others) do NOT yet appear in UConn Crash Repo:
-  - Dec 20th Eugenia Yurovsky (age 89) was killed by a hit-and-run driver while crossing Boulevard at Whiting Lane.
-  - Dec 21st Carlos Garlaza (age 60), a roofing contractor, was struck by a driver while helping a resident exit their driveway at Mohegan Drive and Carlyle Road, and died on Dec 21st.
-  - Dec 25th 2022 two-car crash with 3 fatalities on Simsbury Road
-
- ## Product 2
- Display results of pivot table in a Datawrapper choropleth map, with custom basemap of corridors.geojson
+### Product 2 to come
+ Display results of pivot table in a Datawrapper choropleth map, with custom basemap of wh-polygons.geojson
