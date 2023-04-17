@@ -8,12 +8,14 @@ This crash analysis began with a visual review of West Hartford Crash heat map <
 
 As a result, this crash analysis blends two methods: spatial and tabular. For crashes on local roadways, the police report in the CT Crash Data Repo includes latitude-longitude coordinates, which we plot on a map to determine whether it spatially falls into a defined "corridor". Corridors are polygons we have drawn that follow the contours of a road, with a buffer to capture those alongside the centerline, regardless of name changes (such as when Park Road becomes Sedgwick Road, we name it all the Park-Sedgwick corridor). For crashes on the I-84 limited-access interstate highway (and its entrance or exit ramps), the police report seems to reliably label these as Roadway type = 1, so we can separate those out into a different spreadsheet, which avoids confusing the local road spatial analysis (especially where the interstate crosses over or under local corridors).
 
-The steps below for drawing, cleaning, spatially joining, and analyzing crash data use manual methods with easy-to-learn free or open-source tools in your browser, as described in <https://HandsOnDataViz.org> open-access book. Our results are produced by non-specialist citizens, and we make all of our data and work public to be transparent. Professionals may conduct a more sophisticated analysis with different results using more complex or proprietary GIS tools, and we welcome those who advance our preliminary analysis even further.
+Note that our local corridor spatial analysis simplifies crashes at intersections (e.g. Main St and Park Rd) by arbitrarily assigning them to only one corridor (either Main St OR Park Rd), regardless of the original direction of the motor vehicle(s).
+
+The steps below for drawing, cleaning, spatially joining, and analyzing crash data use manual methods with easy-to-learn free or open-source tools in your browser, as described in <https://HandsOnDataViz.org> open-access book. Our work is produced by non-specialist citizens, and we make all of our data and methods public in order to be transparent. Professionals may conduct a more sophisticated analysis with different results using more complex or proprietary GIS tools. We welcome specialists doing more sophisticated crash analyses to achieve our common goal of Vision Zero and elimination of fatal and serious crash injuries.
 
 ### Draw Corridors (polygons)
 - Draw polygons to represent major local corridors (excluding Interstate I-84) using <https://Placemark.io> free tool
-  - One option is to import key street centerlines from a public source, then use Placemark right-click > Operations > buffer tool to draw uniform radius around each one, converting into polygons. But this does not address changing widths of roads.
-  - Instead, the option used here is to hand-draw each corridor.
+  - One option is to import key street centerlines from a public source, then use Placemark right-click > Operations > buffer tool to draw uniform radius around each one, converting into polygons. But this does not address changing widths of roads (such as New Britain Ave).
+  - Instead, the option used here was to digitally hand-draw each corridor.
 - Inside Placemark in Features or Table, create two properties for each polygon:
   - corridor = simplified uniform name for pivot tables after join steps below
   - corridor-section = detailed name to identify roadway and section on map (such as North Main St 2, the second polygon segment of this street)
