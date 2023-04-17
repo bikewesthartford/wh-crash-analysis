@@ -1,5 +1,7 @@
 # wh-crash-analysis
-Preliminary analysis of WH crashes
+West Hartford CT crash analysis by <https://BikeWestHartford.org> 2023 04 17
+
+See Google Sheet with data tables <https://docs.google.com/spreadsheets/d/1yHVNrofSd3VYd-qGA5LcLhwwhTOYQc8SRUN9hVC44xw/edit#gid=854889833>
 
 ## Sources and Methods
 - Start with visual review of West Hartford Crash Map <https://bikewesthartford.github.io/wh-crashes> to identify hot spots of frequent crash locations. Use method below to spatially identify polygons (corridors) of frequent crash locations with more precision, since police reports do not name roadways uniformly.
