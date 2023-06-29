@@ -1,7 +1,9 @@
 # wh-crash-analysis
-West Hartford CT 2018-22 crash analysis by <https://BikeWestHartford.org> last updated 2023 04 17
+West Hartford CT 2018-22 crash analysis by <https://BikeWestHartford.org> last updated 2023 06 29
 
-See Google Sheet with data tables <https://docs.google.com/spreadsheets/d/1yHVNrofSd3VYd-qGA5LcLhwwhTOYQc8SRUN9hVC44xw/edit#gid=854889833>
+See 17 April 2023 WH Crash Analysis <https://bikewesthartford.org/crash-analysis-2023/>, including two-page PDF and Google Sheet with data tables <https://docs.google.com/spreadsheets/d/1yHVNrofSd3VYd-qGA5LcLhwwhTOYQc8SRUN9hVC44xw/edit#gid=854889833>, both downloaded into this repository with related files
+
+See 29 June 2023 New Britain Ave Google Sheet with data tables <https://docs.google.com/spreadsheets/d/1K0evno0HxcpEBUtUqjWsAeaoDfW3HbNsd9l462_SanM/edit?usp=sharing> and downloaded into this repository with related files
 
 ## Sources and Methods
 This crash analysis began with a visual review of West Hartford Crash heat map <https://bikewesthartford.github.io/wh-crashes> to identify "hot spots" of frequent crash locations. We desired to more precisely identify streets with frequent crashes, but the tabular data from police reports in the [CT Crash Data Repository](https://www.ctcrash.uconn.edu) do not uniformly name Roadways. (For example, police may list several different names or route numbers for New Britain Avenue.) Also, a police report for a crash in a parking lot may list the nearest street address (1417 New Britain Ave), although the incident happened a large distance from the roadway.
@@ -59,3 +61,24 @@ The steps below for drawing, cleaning, spatially joining, and analyzing crash da
 - Upload 'crashes-joined.csv' to existing Google Sheets <https://docs.google.com/spreadsheets/d/1yHVNrofSd3VYd-qGA5LcLhwwhTOYQc8SRUN9hVC44xw/edit#gid=854889833>
 - Create pivot table of 'count' of 'corridor' by Most Severe Injury (where K=killed and A=serious). Sort to identify corridors with most crashes, by type, and calculate percent of total in each column.
 - see final table in Google Sheets and PDF in repo
+
+### New Britain Avenue corridor 1-mile sections
+- Given the high number of crashes with any injuries on the New Britain Avenue corridor, using methods above we divided this 3-mile corridor into three 1-mile sections (west, middle, east) to identify broad patterns.
+- See `wh-corridors-newbritain3.geojson` for polygon boundaries
+  - West mile (Farmington border to Wolcott Park)
+  - Middle mile (Wolcott Park to Quaker Lane)
+  - East mile (Quaker Lane to Hartford border)
+- Joined with point data to create: `crashes-noti84-newbritain3-2018-22.csv`
+- Created pivot table in Google Sheets <https://docs.google.com/spreadsheets/d/1K0evno0HxcpEBUtUqjWsAeaoDfW3HbNsd9l462_SanM/edit?usp=sharing>
+- Downloaded Excel backup: `2023-06-29-wh-newbritain3-crash-tables.xlsx`
+
+| West Hartford crashes reported on New Britain Avenue corridor, 2018 thru 2022 |  |  |  |  |
+|---|---|---|---|---|
+| 1-mile sections of New Britain Ave corridor | All Crashes | Pct Total | with Any Injuries | Pct Total |
+| West mile (Farmington border to Wolcott Park) | 275 | 29% | 76 | 24% |
+| Middle mile (Wolcott Park to Quaker Lane) | 308 | 32% | 115 | 36% |
+| East mile (Quaker Lane to Hartford border) | 368 | 39% | 128 | 40% |
+| Total | 951 | 100% | 319 | 100% |
+
+Notes: Based on police reports to CT Crash Data Repository as of 12 April 2023. See BWH WH Crash Analysis.
+We refer to the continuous roadway as "New Britain Avenue corridor" but the official name varies.
